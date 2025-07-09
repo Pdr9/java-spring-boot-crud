@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(${isEdit ? 'Editar' : 'Novo'} + ' Produto', ~{::content})}">
+<head>
+    <title>Formulário de Produto</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-box me-2"></i>
+                <span th:text="${isEdit ? 'Editar Produto' : 'Novo Produto'}">Novo Produto</span>
+            </h1>
+            <a th:href="@{/web/products}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Voltar
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-form me-2"></i>Dados do Produto
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${isEdit ? '/web/products/' + product.id : '/web/products'}" 
+                              th:object="${product}" method="post">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nome *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                               id="name" 
+                                               th:field="*{name}" 
+                                               placeholder="Digite o nome do produto"
+                                               required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" 
+                                             th:errors="*{name}">Erro no nome</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="price" class="form-label">Preço *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">R$</span>
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                                                   id="price" 
+                                                   th:field="*{price}" 
+                                                   step="0.01"
+                                                   min="0"
+                                                   placeholder="0,00"
+                                                   required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" 
+                                                 th:errors="*{price}">Erro no preço</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea class="form-control" 
+                                          th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                                          id="description" 
+                                          th:field="*{description}" 
+                                          rows="3"
+                                          placeholder="Digite a descrição do produto"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" 
+                                     th:errors="*{description}">Erro na descrição</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="userId" class="form-label">Usuário *</label>
+                                        <select class="form-select" 
+                                                th:classappend="${#fields.hasErrors('userId')} ? 'is-invalid' : ''"
+                                                id="userId" 
+                                                th:field="*{userId}"
+                                                required>
+                                            <option value="">Selecione um usuário</option>
+                                            <option th:each="user : ${users}" 
+                                                    th:value="${user.id}" 
+                                                    th:text="${user.name}">Usuário</option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('userId')}" 
+                                             th:errors="*{userId}">Erro no usuário</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="categoryId" class="form-label">Categoria *</label>
+                                        <select class="form-select" 
+                                                th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''"
+                                                id="categoryId" 
+                                                th:field="*{categoryId}"
+                                                required>
+                                            <option value="">Selecione uma categoria</option>
+                                            <option th:each="category : ${categories}" 
+                                                    th:value="${category.id}" 
+                                                    th:text="${category.name}">Categoria</option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" 
+                                             th:errors="*{categoryId}">Erro na categoria</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="imageUrl" class="form-label">URL da Imagem</label>
+                                        <input type="url" 
+                                               class="form-control" 
+                                               th:classappend="${#fields.hasErrors('imageUrl')} ? 'is-invalid' : ''"
+                                               id="imageUrl" 
+                                               th:field="*{imageUrl}" 
+                                               placeholder="https://exemplo.com/imagem.jpg">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('imageUrl')}" 
+                                             th:errors="*{imageUrl}">Erro na URL da imagem</div>
+                                        <div class="form-text">URL da imagem do produto</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="productUrl" class="form-label">URL do Produto</label>
+                                        <input type="url" 
+                                               class="form-control" 
+                                               th:classappend="${#fields.hasErrors('productUrl')} ? 'is-invalid' : ''"
+                                               id="productUrl" 
+                                               th:field="*{productUrl}" 
+                                               placeholder="https://loja.com/produto">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('productUrl')}" 
+                                             th:errors="*{productUrl}">Erro na URL do produto</div>
+                                        <div class="form-text">Link para a página do produto</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preview da imagem -->
+                            <div class="mb-3" th:if="${product.imageUrl}">
+                                <label class="form-label">Preview da Imagem</label>
+                                <div>
+                                    <img th:src="${product.imageUrl}" 
+                                         th:alt="${product.name}"
+                                         class="product-image-large"
+                                         id="image-preview"
+                                         onerror="this.style.display='none'">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/web/products}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span th:text="${isEdit ? 'Atualizar' : 'Cadastrar'}">Cadastrar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

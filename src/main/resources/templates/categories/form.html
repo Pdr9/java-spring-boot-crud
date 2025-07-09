@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(${isEdit ? 'Editar' : 'Nova'} + ' Categoria', ~{::content})}">
+<head>
+    <title>Formulário de Categoria</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-tag me-2"></i>
+                <span th:text="${isEdit ? 'Editar Categoria' : 'Nova Categoria'}">Nova Categoria</span>
+            </h1>
+            <a th:href="@{/web/categories}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Voltar
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-form me-2"></i>Dados da Categoria
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${isEdit ? '/web/categories/' + category.id : '/web/categories'}" 
+                              th:object="${category}" method="post">
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                       id="name" 
+                                       th:field="*{name}" 
+                                       placeholder="Digite o nome da categoria"
+                                       required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" 
+                                     th:errors="*{name}">Erro no nome</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea class="form-control" 
+                                          th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                                          id="description" 
+                                          th:field="*{description}" 
+                                          rows="3"
+                                          placeholder="Digite a descrição da categoria"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" 
+                                     th:errors="*{description}">Erro na descrição</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/web/categories}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span th:text="${isEdit ? 'Atualizar' : 'Cadastrar'}">Cadastrar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

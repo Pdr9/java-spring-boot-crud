@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout('Categorias - Produtos Favoritos', ~{::content})}">
+<head>
+    <title>Categorias</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-tags me-2"></i>Categorias
+            </h1>
+            <a th:href="@{/web/categories/new}" class="btn btn-primary">
+                <i class="bi bi-tag-fill me-2"></i>Nova Categoria
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list me-2"></i>Lista de Categorias
+                    <span class="badge bg-primary ms-2" th:text="${#lists.size(categories)}">0</span>
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" th:if="${!categories.empty}">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Data de Criação</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="category : ${categories}">
+                                <td><span class="badge bg-secondary" th:text="${category.id}">1</span></td>
+                                <td><strong th:text="${category.name}">Nome</strong></td>
+                                <td th:text="${category.description}">Descrição</td>
+                                <td><small class="text-muted" th:text="${#temporals.format(category.createdAt, 'dd/MM/yyyy HH:mm')}">Data</small></td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{'/web/categories/' + ${category.id}}" 
+                                           class="btn btn-outline-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{'/web/categories/' + ${category.id} + '/edit'}" 
+                                           class="btn btn-outline-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form th:action="@{'/web/categories/' + ${category.id} + '/delete'}" 
+                                              method="post" style="display: inline;">
+                                            <button type="submit" 
+                                                    class="btn btn-outline-danger btn-delete"
+                                                    th:data-item-name="${category.name}"
+                                                    data-item-type="categoria">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${categories.empty}" class="text-center py-5">
+                    <i class="bi bi-tags text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">Nenhuma categoria encontrada</h4>
+                    <a th:href="@{/web/categories/new}" class="btn btn-primary">
+                        <i class="bi bi-tag-fill me-2"></i>Criar Primeira Categoria
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

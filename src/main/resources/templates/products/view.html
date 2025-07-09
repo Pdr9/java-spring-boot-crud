@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout('Detalhes do Produto - Produtos Favoritos', ~{::content})}">
+<head>
+    <title>Detalhes do Produto</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-box me-2"></i>
+                <span th:text="${product.name}">Nome do Produto</span>
+            </h1>
+            <div>
+                <a th:href="@{/web/products/{id}/edit(id=${product.id})}" class="btn btn-primary me-2">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                </a>
+                <a th:href="@{/web/products}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Detalhes do Produto -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Card Principal -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Informações do Produto
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Imagem do Produto -->
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center">
+                                    <img th:if="${product.imageUrl}" 
+                                         th:src="${product.imageUrl}"
+                                         alt="Imagem do Produto"
+                                         class="img-fluid rounded"
+                                         style="max-height: 200px;">
+                                    <div th:unless="${product.imageUrl}" 
+                                         class="bg-light rounded d-flex align-items-center justify-content-center"
+                                         style="height: 200px;">
+                                        <i class="bi bi-image text-muted display-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informações Principais -->
+                            <div class="col-md-8">
+                                <!-- Nome e Preço -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nome:</label>
+                                    <p class="mb-2" th:text="${product.name}">Nome do Produto</p>
+                                    
+                                    <label class="form-label fw-bold">Preço:</label>
+                                    <p class="mb-2">
+                                        <span class="badge bg-success fs-6" th:text="${#numbers.formatCurrency(product.price)}">
+                                            R$ 0,00
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <!-- Links -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Link do Produto:</label>
+                                    <p class="mb-2">
+                                        <a th:if="${product.productUrl}" 
+                                           th:href="${product.productUrl}" 
+                                           target="_blank"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-box-arrow-up-right me-1"></i>Visitar Loja
+                                        </a>
+                                        <span th:unless="${product.productUrl}" class="text-muted">
+                                            <i class="bi bi-dash"></i> Não informado
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <!-- Categoria e Usuário -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Categoria:</label>
+                                    <p class="mb-2">
+                                        <a th:href="@{/web/categories/{id}(id=${product.categoryId})}" 
+                                           class="text-decoration-none">
+                                            <i class="bi bi-tag me-1"></i>
+                                            <span th:text="${product.categoryName}">Nome da Categoria</span>
+                                        </a>
+                                    </p>
+
+                                    <label class="form-label fw-bold">Usuário:</label>
+                                    <p class="mb-0">
+                                        <a th:href="@{/web/users/{id}(id=${product.userId})}" 
+                                           class="text-decoration-none">
+                                            <i class="bi bi-person me-1"></i>
+                                            <span th:text="${product.userName}">Nome do Usuário</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="mt-3">
+                            <label class="form-label fw-bold">Descrição:</label>
+                            <p class="mb-0" th:text="${product.description ?: 'Nenhuma descrição fornecida'}">
+                                Descrição do produto
+                            </p>
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="row mt-4 pt-3 border-top">
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="bi bi-calendar-plus me-1"></i>Data de Cadastro:
+                                </label>
+                                <p class="mb-0" th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024 00:00
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="bi bi-calendar-check me-1"></i>Última Atualização:
+                                </label>
+                                <p class="mb-0" th:text="${#temporals.format(product.updatedAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024 00:00
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="d-flex justify-content-between mt-4">
+                    <form th:action="@{/web/products/{id}/delete(id=${product.id})}" 
+                          method="post"
+                          onsubmit="return confirm('Tem certeza que deseja excluir este produto?')">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>Excluir Produto
+                        </button>
+                    </form>
+                    <div>
+                        <a th:if="${product.productUrl}" 
+                           th:href="${product.productUrl}" 
+                           target="_blank"
+                           class="btn btn-success me-2">
+                            <i class="bi bi-cart me-1"></i>Comprar
+                        </a>
+                        <a th:href="@{/web/products/{id}/edit(id=${product.id})}" class="btn btn-primary">
+                            <i class="bi bi-pencil me-1"></i>Editar Produto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

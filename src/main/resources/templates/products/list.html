@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout('Produtos Favoritos', ~{::content})}">
+<head>
+    <title>Produtos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-box me-2"></i>Produtos Favoritos
+            </h1>
+            <a th:href="@{/web/products/new}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Novo Produto
+            </a>
+        </div>
+
+        <!-- Filtros avançados -->
+        <div class="filter-section">
+            <h5><i class="bi bi-funnel me-2"></i>Filtros</h5>
+            <form method="get" th:action="@{/web/products}">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Usuário</label>
+                            <select name="userId" class="form-select auto-filter">
+                                <option value="">Todos os usuários</option>
+                                <option th:each="user : ${users}" 
+                                        th:value="${user.id}" 
+                                        th:text="${user.name}"
+                                        th:selected="${selectedUserId == user.id}">Usuário</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Categoria</label>
+                            <select name="categoryId" class="form-select auto-filter">
+                                <option value="">Todas as categorias</option>
+                                <option th:each="category : ${categories}" 
+                                        th:value="${category.id}" 
+                                        th:text="${category.name}"
+                                        th:selected="${selectedCategoryId == category.id}">Categoria</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Buscar</label>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Nome do produto..." 
+                                   th:value="${searchTerm}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-search me-1"></i>Pesquisar
+                        </button>
+                        <a th:href="@{/web/products}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Limpar Filtros
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de produtos -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-list me-2"></i>Lista de Produtos
+                    <span class="badge bg-primary ms-2" th:text="${#lists.size(products)}">0</span>
+                </h5>
+                <div class="text-muted">
+                    Total: <span th:text="${#lists.size(products)}">0</span> produto(s)
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <!-- Grid de produtos -->
+                <div th:if="${!products.empty}" class="row p-3">
+                    <div class="col-md-6 col-lg-4 mb-4" th:each="product : ${products}">
+                        <div class="card h-100">
+                            <div class="position-relative">
+                                <img th:if="${product.imageUrl}" 
+                                     th:src="${product.imageUrl}" 
+                                     th:alt="${product.name}"
+                                     class="card-img-top" 
+                                     style="height: 200px; object-fit: cover;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="d-none align-items-center justify-content-center bg-light" 
+                                     style="height: 200px;">
+                                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute top-0 start-0 m-2">
+                                    <span class="badge bg-success" th:text="${product.categoryName}">Categoria</span>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${product.name}">Nome do Produto</h5>
+                                <p class="card-text text-muted small flex-grow-1" 
+                                   th:text="${#strings.abbreviate(product.description, 100)}">Descrição...</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h4 class="text-success mb-0">
+                                            R$ <span th:text="${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">0,00</span>
+                                        </h4>
+                                        <span class="badge bg-primary" th:text="${product.userName}">Usuário</span>
+                                    </div>
+                                    <div class="btn-group w-100">
+                                        <a th:href="@{'/web/products/' + ${product.id}}" 
+                                           class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{'/web/products/' + ${product.id} + '/edit'}" 
+                                           class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a th:if="${product.productUrl}" 
+                                           th:href="${product.productUrl}" 
+                                           target="_blank"
+                                           class="btn btn-outline-success btn-sm">
+                                            <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                        <form th:action="@{'/web/products/' + ${product.id} + '/delete'}" 
+                                              method="post" style="display: inline;">
+                                            <button type="submit" 
+                                                    class="btn btn-outline-danger btn-sm btn-delete"
+                                                    th:data-item-name="${product.name}"
+                                                    data-item-type="produto">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem quando não há produtos -->
+                <div th:if="${products.empty}" class="text-center py-5">
+                    <i class="bi bi-box text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">Nenhum produto encontrado</h4>
+                    <p class="text-muted mb-4">
+                        <span th:if="${searchTerm or selectedUserId or selectedCategoryId}">
+                            Nenhum produto encontrado com os filtros aplicados.
+                        </span>
+                        <span th:unless="${searchTerm or selectedUserId or selectedCategoryId}">
+                            Ainda não há produtos cadastrados no sistema.
+                        </span>
+                    </p>
+                    <a th:href="@{/web/products/new}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Adicionar Primeiro Produto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

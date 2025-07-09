@@ -1,0 +1,62 @@
+### Teste da API de Produtos Favoritos
+
+# 1. Informações da API
+GET http://localhost:8080/api
+
+### 2. Testar Categorias
+
+# Listar todas as categorias
+GET http://localhost:8080/api/categories
+
+# Buscar categoria por ID
+GET http://localhost:8080/api/categories/1
+
+# Criar nova categoria
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "Categoria Teste",
+  "description": "Descrição da categoria teste"
+}
+
+### 3. Testar Produtos
+
+# Listar todos os produtos
+GET http://localhost:8080/api/products
+
+# Buscar produto por ID
+GET http://localhost:8080/api/products/1
+
+# Criar novo produto
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "Produto Teste",
+  "description": "Descrição do produto teste",
+  "price": 99.99,
+  "userId": 1,
+  "categoryId": 1
+}
+
+### 4. Testar Usuários
+
+# Listar todos os usuários
+GET http://localhost:8080/api/users
+
+# Buscar usuário por ID
+GET http://localhost:8080/api/users/1
+
+# Criar novo usuário
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "Usuário Teste",
+  "email": "teste@email.com"
+}
+
+### 5. Swagger UI
+# Acesse: http://localhost:8080/swagger-ui.html
+# Ou: http://localhost:8080/swagger-ui/index.html 

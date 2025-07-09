@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout('Detalhes da Categoria - Produtos Favoritos', ~{::content})}">
+<head>
+    <title>Detalhes da Categoria</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-primary-custom">
+                <i class="bi bi-tag me-2"></i>
+                <span th:text="${category.name}">Nome da Categoria</span>
+            </h1>
+            <div>
+                <a th:href="@{/web/categories/{id}/edit(id=${category.id})}" class="btn btn-primary me-2">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                </a>
+                <a th:href="@{/web/categories}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Detalhes da Categoria -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Informações da Categoria
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Nome -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nome:</label>
+                            <p class="mb-0" th:text="${category.name}">Nome da Categoria</p>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descrição:</label>
+                            <p class="mb-0" th:text="${category.description ?: 'Nenhuma descrição fornecida'}">
+                                Descrição da categoria
+                            </p>
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-calendar-plus me-1"></i>Data de Cadastro:
+                                </label>
+                                <p class="mb-0" th:text="${#temporals.format(category.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024 00:00
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-calendar-check me-1"></i>Última Atualização:
+                                </label>
+                                <p class="mb-0" th:text="${#temporals.format(category.updatedAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024 00:00
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Produtos da Categoria -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-box me-2"></i>Produtos nesta Categoria
+                            </h5>
+                            <a th:href="@{/web/products/new(categoryId=${category.id})}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Novo Produto
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(products)}" class="text-center py-4">
+                            <i class="bi bi-emoji-neutral display-4 text-muted"></i>
+                            <p class="lead mt-3">Esta categoria ainda não tem produtos.</p>
+                            <a th:href="@{/web/products/new(categoryId=${category.id})}" class="btn btn-primary mt-2">
+                                <i class="bi bi-plus-circle me-1"></i>Adicionar Produto
+                            </a>
+                        </div>
+
+                        <div th:if="${not #lists.isEmpty(products)}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço</th>
+                                        <th>Link</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td>
+                                            <a th:href="@{/web/products/{id}(id=${product.id})}" 
+                                               th:text="${product.name}"
+                                               class="text-decoration-none">
+                                                Nome do Produto
+                                            </a>
+                                        </td>
+                                        <td th:text="${#numbers.formatCurrency(product.price)}">R$ 0,00</td>
+                                        <td>
+                                            <a th:if="${product.url}" 
+                                               th:href="${product.url}" 
+                                               target="_blank" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                            <span th:unless="${product.url}" class="text-muted">
+                                                <i class="bi bi-dash"></i>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/web/products/{id}/edit(id=${product.id})}" 
+                                               class="btn btn-sm btn-outline-primary me-1">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form th:action="@{/web/products/{id}/delete(id=${product.id})}" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Tem certeza que deseja excluir este produto?')">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="d-flex justify-content-between mt-4">
+                    <form th:action="@{/web/categories/{id}/delete(id=${category.id})}" 
+                          method="post"
+                          onsubmit="return confirm('Tem certeza que deseja excluir esta categoria? Todos os produtos associados serão desvinculados.')">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>Excluir Categoria
+                        </button>
+                    </form>
+                    <div>
+                        <a th:href="@{/web/categories/{id}/edit(id=${category.id})}" class="btn btn-primary">
+                            <i class="bi bi-pencil me-1"></i>Editar Categoria
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
