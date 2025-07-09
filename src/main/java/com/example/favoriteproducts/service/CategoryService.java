@@ -70,6 +70,12 @@ public class CategoryService {
         if (!categoryRepository.existsById(id)) {
             throw new IllegalArgumentException("Categoria não encontrada com ID: " + id);
         }
+        
+        // Verificar se a categoria possui produtos antes de deletar
+        if (categoryRepository.findById(id).get().getProducts().size() > 0) {
+            throw new IllegalArgumentException("Não é possível deletar categoria que possui produtos associados. ID: " + id);
+        }
+        
         categoryRepository.deleteById(id);
     }
 

@@ -1,10 +1,6 @@
 package com.example.favoriteproducts.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,25 +13,18 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Nome do produto é obrigatório")
-    @Size(min = 2, max = 100, message = "Nome do produto deve ter entre 2 e 100 caracteres")
     @Column(nullable = false, length = 100)
     private String name;
     
-    @Size(max = 500, message = "Descrição deve ter no máximo 500 caracteres")
     @Column(length = 500)
     private String description;
     
-    @NotNull(message = "Preço é obrigatório")
-    @DecimalMin(value = "0.01", message = "Preço deve ser maior que zero")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
     
-    @Size(max = 200, message = "URL da imagem deve ter no máximo 200 caracteres")
     @Column(name = "image_url", length = 200)
     private String imageUrl;
     
-    @Size(max = 300, message = "URL do produto deve ter no máximo 300 caracteres")
     @Column(name = "product_url", length = 300)
     private String productUrl;
     
@@ -47,12 +36,10 @@ public class Product {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "Usuário é obrigatório")
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @NotNull(message = "Categoria é obrigatória")
     private Category category;
     
     // Constructors

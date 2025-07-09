@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin(origins = "*")
 @Tag(name = "Categorias", description = "Operações relacionadas às categorias")
 public class CategoryController {
 

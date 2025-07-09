@@ -65,6 +65,12 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuário não encontrado com ID: " + id);
         }
+        
+        // Verificar se o usuário possui produtos antes de deletar
+        if (userRepository.findById(id).get().getProducts().size() > 0) {
+            throw new IllegalArgumentException("Não é possível deletar usuário que possui produtos associados. ID: " + id);
+        }
+        
         userRepository.deleteById(id);
     }
 

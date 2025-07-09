@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 @Tag(name = "Usuários", description = "Operações relacionadas aos usuários")
 public class UserController {
 

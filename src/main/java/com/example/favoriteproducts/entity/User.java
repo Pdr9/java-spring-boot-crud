@@ -1,9 +1,6 @@
 package com.example.favoriteproducts.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,13 +14,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Nome é obrigatório")
-    @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
     @Column(nullable = false, length = 100)
     private String name;
     
-    @Email(message = "Email deve ser válido")
-    @NotBlank(message = "Email é obrigatório")
     @Column(nullable = false, unique = true, length = 150)
     private String email;
     

@@ -9,12 +9,12 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ProductMapper.class})
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     
-    @Mapping(source = "products", target = "products")
+    @Mapping(target = "products", ignore = true)
     UserDTO toDTO(User user);
     
     @Mapping(target = "id", ignore = true)

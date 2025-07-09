@@ -1,8 +1,6 @@
 package com.example.favoriteproducts.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,12 +14,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Nome da categoria é obrigatório")
-    @Size(min = 2, max = 50, message = "Nome da categoria deve ter entre 2 e 50 caracteres")
     @Column(nullable = false, unique = true, length = 50)
     private String name;
     
-    @Size(max = 200, message = "Descrição deve ter no máximo 200 caracteres")
     @Column(length = 200)
     private String description;
     
